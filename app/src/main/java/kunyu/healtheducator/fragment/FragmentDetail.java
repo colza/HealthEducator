@@ -101,13 +101,21 @@ public class FragmentDetail extends Fragment {
         mWebView.setOnScrollChangedCallback(new ObservableWebView.OnScrollChangedCallback() {
             @Override
             public void onScroll(int scrollXPosition, int scrollYPosition) {
-                if( mFloatingActionButton.getVisibility() == View.VISIBLE && scrollYPosition > mWebView.getCurrentScrollY()){
-                    mFloatingActionButton.hide();
-                } else if (mFloatingActionButton.getVisibility() != View.VISIBLE && scrollYPosition < mWebView.getCurrentScrollY() ) {
+
+                // This part of code can enable the floating button to show up as scroll up
+//                if( mFloatingActionButton.getVisibility() == View.VISIBLE && scrollYPosition > mWebView.getCurrentScrollY()){
+//                    mFloatingActionButton.hide();
+//                } else if (mFloatingActionButton.getVisibility() != View.VISIBLE && scrollYPosition < mWebView.getCurrentScrollY() ) {
+//                    mFloatingActionButton.show();
+//                }
+//                mWebView.setCurrentScrollY(scrollYPosition);
+
+                int height = (int) Math.floor(mWebView.getContentHeight() * mWebView.getScale());
+                if(height - mWebView.getScrollY() == mWebView.getHeight()){
                     mFloatingActionButton.show();
                 }
 
-                mWebView.setCurrentScrollY(scrollYPosition);
+
             }
         });
 
@@ -116,10 +124,11 @@ public class FragmentDetail extends Fragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("LOG","count= " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
                 if( getActivity() instanceof ActivityMain){
                     ActivityMain activityMain = (ActivityMain) getActivity();
                     activityMain.setPositionAtListRead(position);
+                    getFragmentManager().popBackStack();
+
                 }
             }
         });

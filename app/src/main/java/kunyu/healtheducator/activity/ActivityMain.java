@@ -21,6 +21,7 @@ import kunyu.healtheducator.fragment.FragmentListener;
 import kunyu.healtheducator.model.ModelCellEducation;
 
 public class ActivityMain extends AppCompatActivity implements FragmentListener.OnFragmentInteractionListener, FragmentList.OnClickCellItemListener, FragmentDetail.OnClickFloatingButtonListener, FragmentManager.OnBackStackChangedListener{
+    private final int ARTICLE_SIZE = 30;
     private List<ModelCellEducation> mModelCellEducationList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +29,13 @@ public class ActivityMain extends AppCompatActivity implements FragmentListener.
         setContentView(R.layout.activity_main);
 
         if( ModelCellEducation.count() ==  0 ) {
-            ModelCellEducation.spawnData(20);
+            ModelCellEducation.spawnData(ARTICLE_SIZE);
         }
 
         mModelCellEducationList = Select.from(ModelCellEducation.class).list();
 
         if (findViewById(R.id.fragment_container) != null) {
 
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
             if (savedInstanceState != null) {
                 return;
             }
@@ -64,11 +62,10 @@ public class ActivityMain extends AppCompatActivity implements FragmentListener.
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(this);
         FragmentTransaction fragmentTransaction= fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         fragmentTransaction.replace(R.id.fragment_container, fragmentDetail);
         fragmentTransaction.addToBackStack(FragmentDetail.class.getName());
         fragmentTransaction.commit();
-
-        Log.i("LOG","count= " + getSupportFragmentManager().getBackStackEntryCount());
     }
 
     @Override

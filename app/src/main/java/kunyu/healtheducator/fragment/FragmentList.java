@@ -8,6 +8,9 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,8 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -71,8 +76,6 @@ public class FragmentList extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rvEducationTopic);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDimensionPixelOffset(R.dimen.space_between_item)));
 
@@ -83,6 +86,16 @@ public class FragmentList extends Fragment {
             mAdapaterEducation = new AdapaterEducation(activityMain.getModelCellEducationList());
             mRecyclerView.setAdapter(mAdapaterEducation);
         }
+
+        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.floatingButton);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] greetings = getResources().getStringArray(R.array.greetings);
+                Snackbar.make(coordinatorLayout, greetings[new Random().nextInt(greetings.length)], Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -112,6 +125,7 @@ public class FragmentList extends Fragment {
 
     private class AdapaterEducation extends RecyclerView.Adapter<AdapaterEducation.MyViewHolder>{
         private List<ModelCellEducation> list;
+        private int lastPosition = -1;
 
         public AdapaterEducation(List<ModelCellEducation> list) {
             this.list = list;
@@ -164,8 +178,21 @@ public class FragmentList extends Fragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             holder.setData(list.get(position));
+
+            // Here you apply the animation when the view is bound
+            setAnimation(holder.itemView, position);
         }
 
+        private void setAnimation(View viewToAnimate, int position)
+        {
+            // If the bound view wasn't previously displayed on screen, it's animated
+            if (position > lastPosition)
+            {
+                Animation animation = AnimationUtils.loadAnimation(viewToAnimate.getContext(), android.R.anim.slide_in_left);
+                viewToAnimate.startAnimation(animation);
+                lastPosition = position;
+            }
+        }
         @Override
         public int getItemCount() {
             return list.size();

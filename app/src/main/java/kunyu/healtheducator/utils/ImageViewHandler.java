@@ -11,7 +11,7 @@ public class ImageViewHandler {
 
     public static void greyLock(ImageView imageView){
         ColorMatrix matrix = new ColorMatrix();
-        matrix.setSaturation(0);  //0 means grayscale
+        matrix.setSaturation(0);  //0 means gray scale
         ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
         imageView.setColorFilter(cf);
         imageView.setAlpha(128);

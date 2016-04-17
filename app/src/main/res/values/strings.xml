@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">HealthEducator</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array
+        name="greetings">
+        <item>The secret of success is constancy to purpose.</item>
+        <item>There are no shortcuts to any place worth going.</item>
+        <item>You are uinique, nothing can replace you.</item>
+        <item>Where there is life, there is hope.</item>
+        <item>You make the failure complete when you stop trying.</item>
+        <item>Each man is the architect of his own fate.</item>
+        <item>C\'est la vie!</item>
+    </string-array>
 </resources>

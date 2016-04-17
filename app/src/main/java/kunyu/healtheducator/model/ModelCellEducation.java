@@ -22,12 +22,11 @@ public class ModelCellEducation extends SugarRecord {
 
     public static void spawnData(int spawnCount){
         LoremIpsum loremIpsum = new LoremIpsum();
-        int titlelength = 7;
         for( int i = 0 ; i < spawnCount; i++){
             ModelCellEducation modelCellEducation = new ModelCellEducation();
             modelCellEducation.imageUrl = "http://lorempixel.com/500/300/";
-            modelCellEducation.textTitle = loremIpsum.getWords(100, i*2);
-            modelCellEducation.textContent = loremIpsum.getWords(150, i*2);
+            modelCellEducation.textTitle = loremIpsum.getWords(100, i);
+            modelCellEducation.textContent = loremIpsum.getWords(150, i);
             modelCellEducation.setMaxLine(new Random().nextInt(7-3) + 3);
             modelCellEducation.save();
         }
