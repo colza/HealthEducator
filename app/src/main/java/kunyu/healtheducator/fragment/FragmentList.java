@@ -1,6 +1,10 @@
 package kunyu.healtheducator.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,22 +29,15 @@ import java.util.Random;
 import de.svenjacobs.loremipsum.LoremIpsum;
 import kunyu.healtheducator.DividerItemDecoration;
 import kunyu.healtheducator.R;
+import kunyu.healtheducator.activity.ActivityMain;
 import kunyu.healtheducator.model.ModelCellEducation;
+import kunyu.healtheducator.utils.ImageViewHandler;
 
 public class FragmentList extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private AdapaterEducation mAdapaterEducation;
     private StaggeredGridLayoutManager mStaggeredGridLayoutManager;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnClickCellItemListener mOnClickCellItemListener;
     private FragmentListener.OnFragmentInteractionListener mListener;
@@ -50,34 +47,17 @@ public class FragmentList extends Fragment {
     }
 
     public interface OnClickCellItemListener{
-        public void onClickCellItem(long dataId);
+        public void onClickCellItem(int adapterPosition);
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentList.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentList newInstance(String param1, String param2) {
-        FragmentList fragment = new FragmentList();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public void setDataIdAsRead(){
+
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -91,22 +71,18 @@ public class FragmentList extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if( ModelCellEducation.count() ==  0 ) {
-            ModelCellEducation.spawnData(20);
-        }
+
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rvEducationTopic);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDimensionPixelOffset(R.dimen.space_between_item)));
-//        mLayoutManager = new LinearLayoutManager(getActivity());
-//        mRecyclerView.setLayoutManager(mLayoutManager);
+
         mStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mStaggeredGridLayoutManager);
-        mAdapaterEducation = new AdapaterEducation();
-        mRecyclerView.setAdapter(mAdapaterEducation);
-
-        List<ModelCellEducation> list = Select.from(ModelCellEducation.class).list();
-        mAdapaterEducation.attachList(list);
-
+        if( getActivity() instanceof ActivityMain){
+            ActivityMain activityMain = (ActivityMain) getActivity();
+            mAdapaterEducation = new AdapaterEducation(activityMain.getModelCellEducationList());
+            mRecyclerView.setAdapter(mAdapaterEducation);
+        }
     }
 
     @Override
@@ -135,12 +111,12 @@ public class FragmentList extends Fragment {
     }
 
     private class AdapaterEducation extends RecyclerView.Adapter<AdapaterEducation.MyViewHolder>{
-        private List<ModelCellEducation> list = new ArrayList<>();
+        private List<ModelCellEducation> list;
 
-        public void attachList(List<ModelCellEducation> list){
-            this.list.addAll(0,list);
-            notifyDataSetChanged();
+        public AdapaterEducation(List<ModelCellEducation> list) {
+            this.list = list;
         }
+
         public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
             public View itemView;
             public ImageView imageView;
@@ -162,14 +138,19 @@ public class FragmentList extends Fragment {
                 title.setText(modelCellEducation.getTextTitle());
                 content.setText(modelCellEducation.getTextContent());
                 content.setMaxLines(modelCellEducation.maxLine);
+
                 if( modelCellEducation.getRead() == true ) {
-                    //set grey out
+                    content.setVisibility(View.GONE);
+                    ImageViewHandler.greyLock(imageView);
+                }else{
+                    content.setVisibility(View.VISIBLE);
+                    ImageViewHandler.greyUnlock(imageView);
                 }
             }
 
             @Override
             public void onClick(View view) {
-                mOnClickCellItemListener.onClickCellItem(list.get(getAdapterPosition()).getId());
+                mOnClickCellItemListener.onClickCellItem(getAdapterPosition());
             }
         }
 

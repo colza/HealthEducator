@@ -5,17 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <WebView
-        android:id="@+id/webContent"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:minHeight="5dip"
+            android:maxHeight="5dip"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@android:style/Widget.ProgressBar.Horizontal" />
+        <kunyu.healtheducator.ObservableWebView
+            android:id="@+id/webContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></kunyu.healtheducator.ObservableWebView>
+    </LinearLayout>
+
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:clickable="true"
+        android:visibility="gone"
         android:src="@android:drawable/ic_menu_add"
         app:layout_anchor="@id/webContent"
         app:layout_anchorGravity="bottom|right|end"

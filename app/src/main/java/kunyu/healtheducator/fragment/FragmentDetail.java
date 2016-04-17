@@ -1,60 +1,51 @@
 package kunyu.healtheducator.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
+import kunyu.healtheducator.ObservableWebView;
 import kunyu.healtheducator.R;
+import kunyu.healtheducator.activity.ActivityMain;
 
 public class FragmentDetail extends Fragment {
-    private WebView mWebView;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private ProgressBar mProgressBar;
+    private ObservableWebView mWebView;
+    private FloatingActionButton mFloatingActionButton;
     private FragmentListener.OnFragmentInteractionListener mListener;
+    private OnClickFloatingButtonListener mFloatingButtonListener;
+    public static final String POSITION_IN_LIST = "POSITION_IN_LIST";
+
+    private int position;
+
+    public interface OnClickFloatingButtonListener{
+        public void onClickWebViewFloatingButton(long dataId);
+    }
 
     public FragmentDetail() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentDetail.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentDetail newInstance(String param1, String param2) {
-        FragmentDetail fragment = new FragmentDetail();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            position = getArguments().getInt(POSITION_IN_LIST);
         }
     }
 
@@ -68,7 +59,12 @@ public class FragmentDetail extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mWebView = (WebView) view.findViewById(R.id.webContent);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        mProgressBar.setMax(100);
+
+        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.floatingButton);
+
+        mWebView = (ObservableWebView) view.findViewById(R.id.webContent);
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new WebViewClient(){
@@ -77,10 +73,56 @@ public class FragmentDetail extends Fragment {
                 view.loadUrl(url);
                 return true;
             }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                mProgressBar.setVisibility(View.VISIBLE);
+                mProgressBar.setProgress(0);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                mProgressBar.setVisibility(View.GONE);
+                mProgressBar.setProgress(100);
+                view.clearCache(true);
+            }
         });
-//        mWebView.loadUrl("http://www.example.com");
+
+        mWebView.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                mProgressBar.setProgress(newProgress);
+            }
+        });
+
+        mWebView.setOnScrollChangedCallback(new ObservableWebView.OnScrollChangedCallback() {
+            @Override
+            public void onScroll(int scrollXPosition, int scrollYPosition) {
+                if( mFloatingActionButton.getVisibility() == View.VISIBLE && scrollYPosition > mWebView.getCurrentScrollY()){
+                    mFloatingActionButton.hide();
+                } else if (mFloatingActionButton.getVisibility() != View.VISIBLE && scrollYPosition < mWebView.getCurrentScrollY() ) {
+                    mFloatingActionButton.show();
+                }
+
+                mWebView.setCurrentScrollY(scrollYPosition);
+            }
+        });
+
         mWebView.loadUrl("https://en.wikipedia.org/");
 
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("LOG","count= " + getActivity().getSupportFragmentManager().getBackStackEntryCount());
+                if( getActivity() instanceof ActivityMain){
+                    ActivityMain activityMain = (ActivityMain) getActivity();
+                    activityMain.setPositionAtListRead(position);
+                }
+            }
+        });
     }
 
     @Override
@@ -92,11 +134,23 @@ public class FragmentDetail extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement FragmentListener");
         }
+
+        if (context instanceof OnClickFloatingButtonListener) {
+            mFloatingButtonListener = (OnClickFloatingButtonListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement FragmentListener");
+        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public int getPosition() {
+        return position;
     }
 }

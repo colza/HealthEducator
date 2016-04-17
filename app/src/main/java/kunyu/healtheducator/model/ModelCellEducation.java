@@ -22,13 +22,13 @@ public class ModelCellEducation extends SugarRecord {
 
     public static void spawnData(int spawnCount){
         LoremIpsum loremIpsum = new LoremIpsum();
-        int titlelength = 5;
+        int titlelength = 7;
         for( int i = 0 ; i < spawnCount; i++){
             ModelCellEducation modelCellEducation = new ModelCellEducation();
             modelCellEducation.imageUrl = "http://lorempixel.com/500/300/";
-            modelCellEducation.textTitle = loremIpsum.getWords(titlelength*(i+1), titlelength*i);
-            modelCellEducation.textContent = loremIpsum.getWords(150, i*3);
-            modelCellEducation.setMaxLine(new Random().nextInt(6-3) + 3);
+            modelCellEducation.textTitle = loremIpsum.getWords(100, i*2);
+            modelCellEducation.textContent = loremIpsum.getWords(150, i*2);
+            modelCellEducation.setMaxLine(new Random().nextInt(7-3) + 3);
             modelCellEducation.save();
         }
     }
