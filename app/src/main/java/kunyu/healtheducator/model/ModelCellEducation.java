@@ -1,6 +1,9 @@
 package kunyu.healtheducator.model;
 
 import com.orm.SugarRecord;
+
+import java.util.Random;
+
 import de.svenjacobs.loremipsum.LoremIpsum;
 
 /**
@@ -15,17 +18,23 @@ public class ModelCellEducation extends SugarRecord {
 
     public Boolean isRead = false;
 
+    public int maxLine = 1;
+
     public static void spawnData(int spawnCount){
         LoremIpsum loremIpsum = new LoremIpsum();
-
-        while(spawnCount > 0){
+        int titlelength = 5;
+        for( int i = 0 ; i < spawnCount; i++){
             ModelCellEducation modelCellEducation = new ModelCellEducation();
-            modelCellEducation.imageUrl = "http://lorempixel.com/400/200/";
-            modelCellEducation.textTitle = loremIpsum.getWords(30);
-            modelCellEducation.textContent = loremIpsum.getParagraphs();
+            modelCellEducation.imageUrl = "http://lorempixel.com/500/300/";
+            modelCellEducation.textTitle = loremIpsum.getWords(titlelength*(i+1), titlelength*i);
+            modelCellEducation.textContent = loremIpsum.getWords(150, i*3);
+            modelCellEducation.setMaxLine(new Random().nextInt(6-3) + 3);
             modelCellEducation.save();
-            spawnCount--;
         }
+    }
+
+    public void setMaxLine(int maxLine) {
+        this.maxLine = maxLine;
     }
 
     public static long count(){

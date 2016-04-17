@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.orm.query.Select;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import de.svenjacobs.loremipsum.LoremIpsum;
+import kunyu.healtheducator.DividerItemDecoration;
 import kunyu.healtheducator.R;
 import kunyu.healtheducator.model.ModelCellEducation;
 
@@ -27,6 +31,7 @@ public class FragmentList extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private AdapaterEducation mAdapaterEducation;
+    private StaggeredGridLayoutManager mStaggeredGridLayoutManager;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,10 +42,15 @@ public class FragmentList extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private OnClickCellItemListener mOnClickCellItemListener;
     private FragmentListener.OnFragmentInteractionListener mListener;
 
     public FragmentList() {
         // Required empty public constructor
+    }
+
+    public interface OnClickCellItemListener{
+        public void onClickCellItem(long dataId);
     }
 
     /**
@@ -82,12 +92,15 @@ public class FragmentList extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if( ModelCellEducation.count() ==  0 ) {
-            ModelCellEducation.spawnData(5);
+            ModelCellEducation.spawnData(20);
         }
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rvEducationTopic);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDimensionPixelOffset(R.dimen.space_between_item)));
+//        mLayoutManager = new LinearLayoutManager(getActivity());
+//        mRecyclerView.setLayoutManager(mLayoutManager);
+        mStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mStaggeredGridLayoutManager);
         mAdapaterEducation = new AdapaterEducation();
         mRecyclerView.setAdapter(mAdapaterEducation);
 
@@ -99,6 +112,13 @@ public class FragmentList extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof OnClickCellItemListener) {
+            mOnClickCellItemListener = (OnClickCellItemListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement FragmentListener");
+        }
+
         if (context instanceof FragmentListener.OnFragmentInteractionListener) {
             mListener = (FragmentListener.OnFragmentInteractionListener) context;
         } else {
@@ -110,6 +130,7 @@ public class FragmentList extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mOnClickCellItemListener = null;
         mListener = null;
     }
 
@@ -137,17 +158,18 @@ public class FragmentList extends Fragment {
             }
 
             public void setData(ModelCellEducation modelCellEducation){
-//                Picasso.with(itemView.getContext()).load(modelCellEducation.getImageUrl()).into(imageView);
-//                title.setText(modelCellEducation.getTextTitle());
-//                content.setText(modelCellEducation.getTextContent());
-//                if( modelCellEducation.getRead() == true ) {
-//                    //set grey out
-//                }
+                Picasso.with(imageView.getContext()).load(modelCellEducation.getImageUrl()).memoryPolicy(MemoryPolicy.NO_CACHE).into(imageView);
+                title.setText(modelCellEducation.getTextTitle());
+                content.setText(modelCellEducation.getTextContent());
+                content.setMaxLines(modelCellEducation.maxLine);
+                if( modelCellEducation.getRead() == true ) {
+                    //set grey out
+                }
             }
 
             @Override
             public void onClick(View view) {
-
+                mOnClickCellItemListener.onClickCellItem(list.get(getAdapterPosition()).getId());
             }
         }
 
