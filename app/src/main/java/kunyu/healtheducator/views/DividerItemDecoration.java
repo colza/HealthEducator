@@ -1,4 +1,4 @@
-package kunyu.healtheducator;
+package kunyu.healtheducator.views;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;

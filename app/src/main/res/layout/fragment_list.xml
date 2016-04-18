@@ -20,7 +20,7 @@
         android:src="@drawable/ic_sentiment_satisfied_white_24dp"
         app:layout_anchor="@id/rvEducationTopic"
         app:layout_anchorGravity="bottom|right|end"
-        app:layout_behavior="kunyu.healtheducator.ScrollAwareFABBehavior"
+        app:layout_behavior="kunyu.healtheducator.views.ScrollAwareFABBehavior"
         />
 
 </android.support.design.widget.CoordinatorLayout>

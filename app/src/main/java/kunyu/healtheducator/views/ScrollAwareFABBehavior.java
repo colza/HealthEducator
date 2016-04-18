@@ -1,4 +1,4 @@
-package kunyu.healtheducator;
+package kunyu.healtheducator.views;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;

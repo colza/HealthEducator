@@ -1,18 +1,11 @@
 package kunyu.healtheducator.fragment;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -23,16 +16,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.orm.query.Select;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import de.svenjacobs.loremipsum.LoremIpsum;
-import kunyu.healtheducator.DividerItemDecoration;
+import kunyu.healtheducator.views.DividerItemDecoration;
 import kunyu.healtheducator.R;
 import kunyu.healtheducator.activity.ActivityMain;
 import kunyu.healtheducator.model.ModelCellEducation;

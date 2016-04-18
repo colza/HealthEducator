@@ -6,13 +6,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
 
 
 import com.orm.query.Select;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Random;
@@ -20,7 +17,6 @@ import java.util.Random;
 import kunyu.healtheducator.R;
 import kunyu.healtheducator.fragment.FragmentDetail;
 import kunyu.healtheducator.fragment.FragmentList;
-import kunyu.healtheducator.fragment.FragmentListener;
 import kunyu.healtheducator.model.ModelCellEducation;
 
 public class ActivityMain extends AppCompatActivity implements FragmentList.OnClickCellItemListener, FragmentList.OnClickFloatingButton, FragmentManager.OnBackStackChangedListener{

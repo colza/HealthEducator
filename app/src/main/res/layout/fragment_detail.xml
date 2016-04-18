@@ -16,10 +16,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             style="@android:style/Widget.ProgressBar.Horizontal" />
-        <kunyu.healtheducator.ObservableWebView
+        <kunyu.healtheducator.views.ObservableWebView
             android:id="@+id/webContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></kunyu.healtheducator.ObservableWebView>
+            android:layout_height="match_parent"></kunyu.healtheducator.views.ObservableWebView>
     </LinearLayout>
 
 

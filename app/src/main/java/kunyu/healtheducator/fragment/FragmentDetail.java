@@ -1,25 +1,21 @@
 package kunyu.healtheducator.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import kunyu.healtheducator.ObservableWebView;
+import kunyu.healtheducator.views.ObservableWebView;
 import kunyu.healtheducator.R;
 import kunyu.healtheducator.activity.ActivityMain;
 import kunyu.healtheducator.model.ModelCellEducation;
@@ -28,15 +24,10 @@ public class FragmentDetail extends Fragment {
     private ProgressBar mProgressBar;
     private ObservableWebView mWebView;
     private FloatingActionButton mFloatingActionButton;
-    private FragmentListener.OnFragmentInteractionListener mListener;
-    private OnClickFloatingButtonListener mFloatingButtonListener;
     public static final String POSITION_IN_LIST = "POSITION_IN_LIST";
 
     private int position;
 
-    public interface OnClickFloatingButtonListener{
-        public void onClickWebViewFloatingButton(long dataId);
-    }
 
     public FragmentDetail() {
         // Required empty public constructor
@@ -156,7 +147,6 @@ public class FragmentDetail extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
