@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import kunyu.healtheducator.ObservableWebView;
 import kunyu.healtheducator.R;
 import kunyu.healtheducator.activity.ActivityMain;
+import kunyu.healtheducator.model.ModelCellEducation;
 
 public class FragmentDetail extends Fragment {
     private ProgressBar mProgressBar;
@@ -53,7 +54,18 @@ public class FragmentDetail extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        if( savedInstanceState != null )
+            position = savedInstanceState.getInt(POSITION_IN_LIST);
+
         return inflater.inflate(R.layout.fragment_detail, container, false);
+    }
+
+    public void updateContent(){
+        if( getActivity() instanceof ActivityMain){
+            ActivityMain activityMain = (ActivityMain) getActivity();
+            ModelCellEducation modelCellEducation = activityMain.getModelCellEducationList().get(position);
+            mWebView.loadUrl(modelCellEducation.webAddress);
+        }
     }
 
     @Override
@@ -79,6 +91,8 @@ public class FragmentDetail extends Fragment {
                 super.onPageStarted(view, url, favicon);
                 mProgressBar.setVisibility(View.VISIBLE);
                 mProgressBar.setProgress(0);
+                if(mFloatingActionButton.getVisibility() == View.VISIBLE)
+                    mFloatingActionButton.hide();
             }
 
             @Override
@@ -119,8 +133,6 @@ public class FragmentDetail extends Fragment {
             }
         });
 
-        mWebView.loadUrl("https://en.wikipedia.org/");
-
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,25 +144,13 @@ public class FragmentDetail extends Fragment {
                 }
             }
         });
+
+        updateContent();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof FragmentListener.OnFragmentInteractionListener) {
-            mListener = (FragmentListener.OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement FragmentListener");
-        }
-
-        if (context instanceof OnClickFloatingButtonListener) {
-            mFloatingButtonListener = (OnClickFloatingButtonListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement FragmentListener");
-        }
-
     }
 
     @Override
@@ -159,7 +159,17 @@ public class FragmentDetail extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(POSITION_IN_LIST, position);
+    }
+
     public int getPosition() {
         return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

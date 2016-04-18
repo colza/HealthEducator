@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">HealthEducator</string>
     <string-array
+        name="webAddresses">
+        <item>https://en.wikipedia.org/</item>
+        <item>http://developer.android.com/index.html</item>
+        <item>https://developer.apple.com/</item>
+        <item>http://hingehealth.com/</item>
+        <item>http://stackoverflow.com/</item>
+        <item>https://en.wikipedia.org/wiki/Taiwan</item>
+    </string-array>
+    <string-array
         name="greetings">
         <item>The secret of success is constancy to purpose.</item>
         <item>There are no shortcuts to any place worth going.</item>

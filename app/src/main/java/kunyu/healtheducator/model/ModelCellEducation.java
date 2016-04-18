@@ -18,9 +18,11 @@ public class ModelCellEducation extends SugarRecord {
 
     public Boolean isRead = false;
 
+    public String webAddress;
+
     public int maxLine = 1;
 
-    public static void spawnData(int spawnCount){
+    public static void spawnData(String[] webLinkArray, int spawnCount){
         LoremIpsum loremIpsum = new LoremIpsum();
         for( int i = 0 ; i < spawnCount; i++){
             ModelCellEducation modelCellEducation = new ModelCellEducation();
@@ -28,8 +30,17 @@ public class ModelCellEducation extends SugarRecord {
             modelCellEducation.textTitle = loremIpsum.getWords(100, i);
             modelCellEducation.textContent = loremIpsum.getWords(150, i);
             modelCellEducation.setMaxLine(new Random().nextInt(7-3) + 3);
+            modelCellEducation.setWebAddress(webLinkArray[i%webLinkArray.length]);
             modelCellEducation.save();
         }
+    }
+
+    public String getWebAddress() {
+        return webAddress;
+    }
+
+    public void setWebAddress(String webAddress) {
+        this.webAddress = webAddress;
     }
 
     public void setMaxLine(int maxLine) {

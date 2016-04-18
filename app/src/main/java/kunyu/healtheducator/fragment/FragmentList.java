@@ -41,22 +41,23 @@ import kunyu.healtheducator.utils.ImageViewHandler;
 public class FragmentList extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
+
     private AdapaterEducation mAdapaterEducation;
     private StaggeredGridLayoutManager mStaggeredGridLayoutManager;
 
     private OnClickCellItemListener mOnClickCellItemListener;
-    private FragmentListener.OnFragmentInteractionListener mListener;
+    private OnClickFloatingButton mOnClickFloatingButton;
 
     public FragmentList() {
         // Required empty public constructor
     }
 
     public interface OnClickCellItemListener{
-        public void onClickCellItem(int adapterPosition);
+        void onClickCellItem(int adapterPosition);
     }
 
-    public void setDataIdAsRead(){
-
+    public interface OnClickFloatingButton{
+        void onClickListFloatingButton();
     }
 
 
@@ -92,8 +93,8 @@ public class FragmentList extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] greetings = getResources().getStringArray(R.array.greetings);
-                Snackbar.make(coordinatorLayout, greetings[new Random().nextInt(greetings.length)], Snackbar.LENGTH_LONG).show();
+                if( mOnClickFloatingButton != null)
+                    mOnClickFloatingButton.onClickListFloatingButton();
             }
         });
     }
@@ -108,19 +109,24 @@ public class FragmentList extends Fragment {
                     + " must implement FragmentListener");
         }
 
-        if (context instanceof FragmentListener.OnFragmentInteractionListener) {
-            mListener = (FragmentListener.OnFragmentInteractionListener) context;
+        if (context instanceof OnClickFloatingButton) {
+            mOnClickFloatingButton = (OnClickFloatingButton) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement FragmentListener");
         }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mOnClickCellItemListener = null;
-        mListener = null;
+        mOnClickFloatingButton = null;
+    }
+
+    public void refreshView(){
+        mAdapaterEducation.notifyDataSetChanged();
     }
 
     private class AdapaterEducation extends RecyclerView.Adapter<AdapaterEducation.MyViewHolder>{
@@ -129,6 +135,7 @@ public class FragmentList extends Fragment {
 
         public AdapaterEducation(List<ModelCellEducation> list) {
             this.list = list;
+
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -198,4 +205,6 @@ public class FragmentList extends Fragment {
             return list.size();
         }
     }
+
+
 }
